@@ -1,0 +1,1 @@
+<p class="nav">[[% IF mode != 0 %]<a href="nodes">[% END %]Nodes[% IF mode != 0 %]</a>[% END %]]&nbsp;&nbsp;[[% IF mode != 1 %]<a href="packages">[% END %]Packages[% IF mode != 1 %]</a>[% END %]]</p>

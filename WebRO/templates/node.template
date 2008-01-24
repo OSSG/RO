@@ -1,0 +1,82 @@
+[% INCLUDE 'subtemplates/header.subtemplate' %]
+	<title>WebRO: [% IF error %]Error[% ELSE %][% IF node.node_type == 1 %]Repository[% ELSE %]System[% END %] '[% GET node.name %][% END %]'</title>
+[% INCLUDE 'subtemplates/middle.subtemplate' %]
+[% INCLUDE 'subtemplates/navigation.subtemplate' %]
+[% IF error %]
+<h1>Error. Unknown node.</h1>
+[% ELSE %]
+<h1>[% IF node.node_type == 1 %]Repository[% ELSE %]System[% END %] '[% GET node.name %]'</h1>
+
+[% IF data.error %]<p>[% GET data.error %]</p>[% END %]
+[% IF data.message %]<p>[% GET data.message %]</p>[% END %]
+
+<p>ID: [% GET node.id %]</p>
+<p>Signature: [% GET node.signature %]</p>
+<p>Last sync: [% IF node.sync_time %][% GET node.sync_time %][% ELSE %]Never[% END %]</p>
+<p>Packages: [% GET node.packages %]</p>
+<p>State: [% IF node.to_check %]<font class="unknown">Unknown</font>[% ELSE %]<font class="[% IF node.troubles.trouble %][% IF node.troubles.state == 'Old' %]old_[% ELSIF node.troubles.state == 'Orphaned' %]orph_[% ELSIF node.troubles.state == 'Too new' %]new_[% END %][% IF node.troubles.importance > 1 %]imp_high[% ELSE %]imp_low[% END %][% ELSE %]normal[% END %]">[% GET node.troubles.state %]</font>[% END %]</p>
+[% IF !node.to_check && node.troubles.trouble && node.troubles.packages && node.troubles.packages.size %]
+<h3>Troubled packages ([% GET node.troubles.packages.size %])</h3>
+<table>
+    <tr><th>Package</th><th>Version</th><th>Release</th><th>Serial</th><th>State</th><th>Importance</th></tr>
+[% SET i = 0 %]
+[% FOREACH package = node.troubles.packages %]
+    <tr>
+	<td class="cell[% GET i %]"><a href="package?id=[% GET package.id %]">[% GET package.name %]</a></td>
+	<td class="cell[% GET i %]">[% GET package.version %]</td>
+	<td class="cell[% GET i %]">[% GET package.release %]</td>
+	<td class="cell[% GET i %]">[% GET package.serial %]</td>
+	<td class="cell[% GET i %]"><font class="[% IF package.state == 'Old' %]old_[% ELSIF package.state == 'Orphaned' %]orph_[% ELSIF package.state == 'Too new' %]new_[% END %][% IF package.importance > 1 %]imp_high[% ELSE %]imp_low[% END %]">[% GET package.state %]</font></td>
+	<td class="cell[% GET i %]">[% GET package.importance %]</td>
+    </tr>
+[% SET i = !i %]
+[% END %]
+</table>
+[% END %]
+
+<h2>Notes</h2>
+<p>
+[% IF node.notes %][% GET node.notes %][% ELSE %]None.[% END %]
+</p>
+
+<h2>Related nodes</h2>
+[% IF nodes.size %]
+<table>
+    <tr><th>[% IF node.node_type == 1 %]System[% ELSE %]Repository[% END %]</th><th>Signature</th><th>Packages</th><th>Status</th></tr>
+[% FOREACH rel_node = nodes %]
+    <tr>
+	<td><a href="node?id=[% GET rel_node.id %]">[% GET rel_node.name %] (ID: [% GET rel_node.id %])</a></td>
+	<td>[% GET rel_node.signature %]</td>
+	<td>[% GET rel_node.packages %]</td>
+	<td>[% IF rel_node.to_check %]<font class="unknown">Unknown</font>[% ELSE %]<font class="[% IF rel_node.troubles.importance %][% IF rel_node.troubles.importance > 1 %]imp_high[% ELSE %]imp_low[% END %][% ELSE %]normal[% END %]">[% GET rel_node.troubles.state %]</font>[% END %]</td>
+    </tr>
+[% END %]
+</table>
+[% ELSE %]
+<p>None. Stand alone node.</p>
+[% END %]
+
+<h2>Change node</h2>
+<form name="ch_form" action="[% GET uri %]?id=[% GET node.id %]" method="post" enctype="multipart/form-data">
+<table>
+    <tr><td class="cell2">Node name:&nbsp;</td><td class="cell3"><input type="text" name="node_name" value="[% GET node.name %]" size="16"/></td></tr>
+    <tr><td class="cell2">Signature:&nbsp;</td><td class="cell3"><input type="text" name="signature" value="[% GET node.signature %]" size="32"/></td></tr>
+    <tr><td class="cell2">Notes:&nbsp;</td><td class="cell3"><textarea name="notes" cols="40" rows="4">[% GET node.notes %]</textarea></td></tr>
+[% IF (node.node_type == 0) && !node.to_check && repositories_list.size %]
+    <tr><td class="cell2">Repositories:&nbsp;</td><td class="cell3"><select name="repositories" multiple="multiple" size="[% IF repositories_list.size > repositories_list_limit %][% GET repositories_list_limit %][% ELSE %][% GET repositories_list.size %][% END %]">>
+[% FOREACH rep = repositories_list %]
+	<option value="[% GET rep.id %]"[% IF rep.selected %] selected="selected"[% END %]>[% GET rep.name %] (ID: [% GET rep.id %])</option>
+[% END %]
+    </select></td></tr>
+[% END %]
+    <tr><td class="cell2"><input type="submit" value="Submit"/></td><td class="cell3"><input type="reset" value="Reset"/></td></tr>
+</table>
+    <input type="hidden" name="action" value="change_node"/>
+    <input type="hidden" name="id" value="[% GET node.id %]"/>
+</form>
+
+<p><a href="nodes?action=drop_node&amp;id=[% GET node.id %]">Delete node</a></p>
+
+[% END %]
+
+[% INCLUDE 'subtemplates/footer.subtemplate' %]

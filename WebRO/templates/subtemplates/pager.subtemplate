@@ -1,0 +1,40 @@
+[% SET begin = data.pager.page * data.pager.limit %]
+[% SET end = (data.pager.page + 1 ) * data.pager.limit - 1 %]
+[% IF end > data.pager.items %]
+[% SET end = data.pager.items - 1 %]
+[% END %]
+
+[% BLOCK pager %]
+<tr><td class="pager" colspan="[% GET cols %]">
+
+[% IF number %][% PROCESS counter_block %]<br/>[% END %]
+
+[% IF (data.pager.pages_count > 1) %]
+    [% IF (data.pager.beg != 0) %]<a href="[% GET uri %]?page=0[% IF query_string %]&amp;[% GET query_string %][% END %]">|&lt;&nbsp;</a>[% END %]
+
+    [% IF ((data.pager.page - (data.pager.end - data.pager.beg)) > 0) %]<a href="[% GET uri %]?page=[% GET data.pager.page - data.pager.end + data.pager.beg %][% IF query_string %]&amp;[% GET query_string %][% END %]">&lt;&lt;</a>
+    [% ELSIF (data.pager.beg != 0) %]<a href="[% GET uri %]?page=0[% IF query_string %]&amp;[% GET query_string %][% END %]">&lt;&lt;</a>
+    [% END %]
+
+    [% FOR i=[data.pager.beg..data.pager.end] %]
+    [% IF (data.pager.page != i) %]<a href="[% GET uri %]?page=[% GET i %][% IF query_string %]&amp;[% GET query_string %][% END %]">&nbsp;[% GET i+1 %]&nbsp;</a>[% ELSE %]<b>&nbsp;[% GET i+1 %]&nbsp;</b>[% END %]
+    [% END %]
+
+    [% IF ((data.pager.page + (data.pager.end - data.pager.beg)) < (data.pager.pages_count - 1)) %]<a href="[% GET uri %]?page=[% GET data.pager.page + data.pager.end - data.pager.beg %][% IF query_string %]&amp;[% GET query_string %][% END %]">&gt;&gt;</a>
+    [% ELSIF (data.pager.end < (data.pager.pages_count - 1)) %]<a href="[% GET uri %]?page=[% GET data.pager.pages_count - 1 %][% IF query_string %]&amp;[% GET query_string %][% END %]">&gt;&gt;</a>
+    [% END %]
+
+    [% IF (data.pager.end < (data.pager.pages_count - 1)) %]<a href="[% GET uri %]?page=[% GET data.pager.pages_count - 1 %][% IF query_string %]&amp;[% GET query_string %][% END %]">&nbsp;&gt;|</a>[% END %]
+
+[% ELSE %]
+	&nbsp;
+[% END %]
+
+[% IF !number %]<br/>[% PROCESS counter_block %][% END %]
+
+</td></tr>
+[% END %]
+
+[% BLOCK counter_block %]
+Items <b>[% GET begin + 1 %]</b> - <b>[% IF (data.pager.items > (end+1)) %][% GET end + 1 %][% ELSE %][% GET data.pager.items %][% END %]</b> from <b>[% GET data.pager.items %]</b>
+[% END %]

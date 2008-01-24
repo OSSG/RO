@@ -1,0 +1,52 @@
+[% INCLUDE 'subtemplates/header.subtemplate' %]
+	<title>WebRO: Nodes list</title>
+[% INCLUDE 'subtemplates/middle.subtemplate' %]
+[% PROCESS 'subtemplates/pager.subtemplate' %]
+[% INCLUDE 'subtemplates/navigation.subtemplate' mode=0 %]
+<h1>Nodes list</h1>
+
+[% IF data.error %]<p>[% GET data.error %]</p>[% END %]
+[% IF data.message %]<p>[% GET data.message %]</p>[% END %]
+
+[% IF data.nodes.size %]
+
+<table>
+[% PROCESS pager number=0 cols=4 %]
+    <tr><th>ID</th><th>Node</th><th>Signature</th><th>Type</th><th>State</th><th>Last sync</th></tr>
+[% SET i = 0 %]
+[% FOREACH node = data.nodes %]
+    <tr>
+    	<td class="cell[% GET i %]"><a href="node?id=[% GET node.id %]">[% GET node.id %]</a></td>
+	<td class="cell[% GET i %]"><a href="node?id=[% GET node.id %]">[% GET node.name %]</a></td>
+	<td class="cell[% GET i %]">[% GET node.signature %]</td>
+	<td class="cell[% GET i %]">[% IF node.node_type %]Repository[% ELSE %]System[% END %]</td>
+	<td class="cell[% GET i %]">[% IF node.to_check %]<font class="unknown">Unknown</font>[% ELSE %]<font class="[% IF node.troubles.trouble %][% IF node.troubles.state == 'Old' %]old_[% ELSIF node.troubles.state == 'Orphaned' %]orph_[% ELSIF node.troubles.state == 'Too new' %]new_[% END %][% IF node.troubles.importance > 1 %]imp_high[% ELSE %]imp_low[% END %][% ELSE %]normal[% END %]">[% GET node.troubles.state %]</font>[% END %]</td>
+	<td class="cell[% GET i %]">[% GET node.sync_time %]</td>
+[% SET i = !i %]
+    </tr>
+[% END %]
+[% PROCESS pager number=1 cols=4 %]
+</table>
+
+[% ELSE %]
+
+<p>Nodes not found.</p>
+[% END %]
+
+<h2>Create new node</h2>
+<form name="cr_form" action="[% GET uri %]?page=[% GET data.pager.page %]" method="post" enctype="multipart/form-data">
+<table>
+    <tr><td class="cell2">Node name:&nbsp;</td><td class="cell3"><input type="text" name="node_name" size="16"/></td></tr>
+    <tr><td class="cell2">Signature:&nbsp;</td><td class="cell3"><input type="text" name="signature" size="32"/></td></tr>
+    <tr><td class="cell2">Notes (optional):&nbsp;</td><td class="cell3"><textarea name="notes" cols="40" rows="4"></textarea></td></tr>
+    <tr><td class="cell2">Node type:&nbsp;</td><td class="cell3"><select name="node_type">
+	<option value="0">System</option>
+	<option value="1">Repository</option>
+    </select></td></tr>
+    <tr><td class="cell2"><input type="submit" value="Submit"/></td><td class="cell3"><input type="reset" value="Reset"/></td></tr>
+</table>
+    <input type="hidden" name="action" value="create_node"/>
+    <input type="hidden" name="page" value="[% GET data.pager.page %]"/>
+</form>
+
+[% INCLUDE 'subtemplates/footer.subtemplate' %]

@@ -1,0 +1,54 @@
+[% INCLUDE 'subtemplates/header.subtemplate' %]
+	<title>WebRO: [% IF error %]Error[% ELSE %]Package '[% GET package.name %][% END %]'</title>
+[% INCLUDE 'subtemplates/middle.subtemplate' %]
+[% INCLUDE 'subtemplates/navigation.subtemplate' %]
+[% IF error %]
+<h1>Error. Unknown package.</h1>
+[% ELSE %]
+<h1>Package '[% GET package.name %]'</h1>
+
+[% IF systems.size %]
+<h2>Installed on systems</h2>
+<table>
+    <tr><th>Node</th><th>Version</th><th>Release</th><th>Serial</th><th>State</th></tr>
+[% SET i = 0 %]
+[% FOREACH system = systems %]
+    <tr>
+	<td class="cell[% GET i %]"><a href="node?id=[% GET system.id %]">[% GET system.name %] (ID: [% GET system.id %])</a></td>
+	<td class="cell[% GET i %]">[% GET system.version %]</td>
+	<td class="cell[% GET i %]">[% GET system.release %]</td>
+	<td class="cell[% GET i %]">[% GET system.serial %]</td>
+[% IF system.to_check %]
+	<td class="cell[% GET i %]"><font class="unknown">Unknown</font></td>
+[% ELSE %]
+[% FOREACH trouble = package.troubles %]
+[% IF trouble.system.id == system.id && trouble.version == system.version && trouble.release == system.release && trouble.serial == system.serial %]<td class="cell[% GET i %]">[% IF trouble.system.to_check %]<font class="unknown">Unknown</font>[% ELSE %]<font class="[% IF trouble.trouble %][% IF trouble.state == 'Old' %]old_[% ELSIF trouble.state == 'Orphaned' %]orph_[% ELSIF trouble.state == 'Too new' %]new_[% END %][% IF trouble.importance > 1 %]imp_high[% ELSE %]imp_low[% END %][% ELSE %]normal[% END %]">[% GET trouble.state %]</font>[% END %]</td>[% END %][% END %]
+[% END %]
+    </tr>
+[% SET i = !i %]
+[% END %]
+</table>
+[% END %]
+
+[% IF repositories.size %]
+<h2>Available in repositories</h2>
+<table>
+    <tr><th>Node</th><th>Version</th><th>Release</th><th>Serial</th><th>Importance</th><th>Summary</th></tr>
+[% SET i = 0 %]
+[% FOREACH repository = repositories %]
+    <tr>
+	<td class="cell[% GET i %]"><a href="node?id=[% GET repository.id %]">[% GET repository.name %] (ID: [% GET repository.id %])</a></td>
+	<td class="cell[% GET i %]">[% GET repository.version %]</td>
+	<td class="cell[% GET i %]">[% GET repository.release %]</td>
+	<td class="cell[% GET i %]">[% GET repository.serial %]</td>
+	<td class="cell[% GET i %]">[% GET repository.importance %]</td>
+	<td class="cell[% GET i %]">[% GET repository.summary %]</td>
+    </tr>
+[% SET i = !i %]
+[% END %]
+</table>
+[% END %]
+
+[% END %]
+
+[% INCLUDE 'subtemplates/footer.subtemplate' %]

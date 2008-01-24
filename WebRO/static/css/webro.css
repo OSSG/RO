@@ -1,0 +1,26 @@
+body {font-family: Verdana, sans-serif; margin: 0px; color: #000; background-color: #fff; font-size: 10pt;}
+h1 {font-size: 16pt; font-weight: bold; margin-top: 18px; margin-left: 5px;}
+h2 {font-size: 14pt; font-weight: bold; margin-left: 5px;}
+h3 {font-size: 12pt; font-weight: bold; margin-left: 5px;}
+a {text-decoration: none; color: #00a; background-color: transparent;}
+a:hover {text-decoration: underline;}
+p, a, input, textarea, select, td {font-size: 10pt;}
+p, table {margin-left: 5px;}
+table {border-spacing: 0px; border-collapse: collapse;}
+th, td {border: 1px solid #000; padding: 2px;}
+th {color: #000; background-color: #ddd;}
+td.cell0 {color: #000; background-color: #fff;}
+td.cell1 {color: #000; background-color: #f3f3f3;}
+td.cell2, td.cell3 {border: 0px;}
+td.cell2 {text-align: right;}
+td.cell3 {text-align: left;} 
+td.pager {text-align: center; border: 0px;}
+p.nav {margin-left: 100px; border-bottom: 1px solid #000;}
+.normal {color: #070; background-color: transparent;}
+.old_imp_high, .imp_high {color: #f00; font-weight: bold; background-color: transparent;}
+.old_imp_low, .imp_low {color: #c00; background-color: transparent;}
+.orph_imp_high {color: #fa0; font-weight: bold; background-color: transparent;}
+.orph_imp_low {color: #a50; background-color: transparent;}
+.new_imp_high {color: #f0f; font-weight: bold; background-color: transparent;}
+.new_imp_low {color: #c0c; background-color: transparent;}
+.unknown {color: #666; background-color: transparent;}

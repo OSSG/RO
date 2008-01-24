@@ -1,0 +1,24 @@
+# Pseudorepository configuration template
+{
+    'type'	=> 'pseudo', # work type. Valid options: system (or sys),
+			     #				 repository (or rep),
+			     #			 	 pseudo
+
+# RO server connection settings
+    'server'	=> {	'host'	=> 'somehost.somewhere',# system host
+			'port'	=> '8279',# server port
+			'proto' => 'http' # workflow protocol
+    },
+
+# logfile section
+    'log'	=> {	'use_log'	=> 1,# logging flag
+			'log_file'	=> '/var/log/ro_log' # log location
+    },
+
+    'signature' => '12345678901234567890123456789012',# unique node signature
+
+# location of files with the pseudorepository description
+#    'source' => 'packages.xml' # in case if there is a single file
+    'source' => ['packages.xml', 'packages2.xml'] # in case if there are
+						  # several files
+};

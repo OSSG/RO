@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<packages>
+    <package>
+	<name>Package1</name>
+	<version>1.0</version>
+	<release>alt0</release>
+	<serial>(none)</serial>
+	<importance>1</importance>
+	<summary><![CDATA[
+Некий пакет.
+	]]></summary>
+    </package>
+    <package>
+	<name>Package2</name>
+	<version>0.1.1</version>
+	<release>alt0</release>
+	<serial>1</serial>
+	<importance>2</importance>
+    </package>
+</packages>

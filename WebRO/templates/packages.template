@@ -1,0 +1,36 @@
+[% INCLUDE 'subtemplates/header.subtemplate' %]
+	<title>WebRO: Packages list</title>
+[% INCLUDE 'subtemplates/middle.subtemplate' %]
+[% PROCESS 'subtemplates/pager.subtemplate' %]
+[% INCLUDE 'subtemplates/navigation.subtemplate' mode=1 %]
+<h1>Packages list</h1>
+
+[% IF data.packages.size %]
+
+<table style="width: 50%;">
+[% PROCESS pager number=0 cols=2 %]
+    <tr><th>Package</th><th>State</th></tr>
+[% SET i = 0 %]
+[% FOREACH package = data.packages %]
+    <tr>
+	<td class="cell[% GET i %]"><a href="package?id=[% GET package.id %]">[% GET package.name %]</a></td>
+	<td class="cell[% GET i %]">
+[% SET flag = 0 %]
+[% FOREACH system = package.troubles %]
+[% IF system.trouble %]<a href="node?id=[% GET system.system.id %]" class="[% IF system.state == 'Old' %]old_[% ELSIF system.state == 'Orphaned' %]orph_[% ELSIF system.state == 'Too new' %]new_[% END %][% IF system.importance > 1 %]imp_high[% ELSE %]imp_low[% END %]">[% GET system.state %] (ID: [% GET system.system.id %])</a>&nbsp;&nbsp;[% SET flag = 1 %][% END %]
+[% END %]
+[% IF !flag %]<font class="normal">Normal</font>[% END %]
+	</td>
+    </tr>
+[% SET i = !i %]
+[% END %]
+[% PROCESS pager number=1 cols=2 %]
+</table>
+
+[% ELSE %]
+
+<p>Packages not found.</p>
+
+[% END %]
+
+[% INCLUDE 'subtemplates/footer.subtemplate' %]
