@@ -19,7 +19,7 @@ use strict;
 use DBI;
 use Getopt::Long qw(:config no_ignore_case bundling no_auto_abbrev);
 
-my $VERSION = '0.9.13'; # версия анализатора
+my $VERSION = '0.9.13svn'; # версия анализатора
 
 # коды состояний (были заданы при создании БД)
 my $states = {
@@ -203,6 +203,9 @@ while (my $node = $requests->{'get_nodes'}->fetchrow_hashref()) {
 	    $requests->{'reset_node_package'}->execute($states->{'package'}->{'normal'}, $packages->{$package_id}->{'importance'}, $package_id, $packages->{$package_id}->{'version'}, $packages->{$package_id}->{'release'}, $packages->{$package_id}->{'serial'}, $node->{'id'});
 	}
     }
+
+# if system is in normal state, reduce it's importance
+    $analyze->{'importance'} = ($analyze->{'state'} == $states->{'node'}->{'normal'}) ? 1 : $analyze->{'importance'};
 
     print STDERR "[DEBUG] Packages checked. Updating system state.\n" if $debug_mode;
     $requests->{'reset_node'}->execute(0, $analyze->{'state'}, $analyze->{'importance'}, $node->{'id'});
