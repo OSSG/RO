@@ -2,6 +2,7 @@
 	<title>WebRO: Packages list</title>
 [% INCLUDE 'subtemplates/middle.subtemplate' %]
 [% PROCESS 'subtemplates/pager.subtemplate' %]
+[% PROCESS 'subtemplates/filter.subtemplate' %]
 [% INCLUDE 'subtemplates/navigation.subtemplate' mode=1 %]
 <h1>Packages list</h1>
 
@@ -9,6 +10,7 @@
 
 <table style="width: 50%;">
 [% PROCESS pager number=0 cols=2 %]
+[% PROCESS filter cols=4 %]
     <tr><th>Package</th><th>State</th></tr>
 [% SET i = 0 %]
 [% FOREACH package = data.packages %]
@@ -28,7 +30,7 @@
 </table>
 
 [% ELSE %]
-
+[% PROCESS filter cols=0 %]
 <p>Packages not found.</p>
 
 [% END %]

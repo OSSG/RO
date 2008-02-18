@@ -2,6 +2,7 @@
 	<title>WebRO: Nodes list</title>
 [% INCLUDE 'subtemplates/middle.subtemplate' %]
 [% PROCESS 'subtemplates/pager.subtemplate' %]
+[% PROCESS 'subtemplates/filter.subtemplate' %]
 [% INCLUDE 'subtemplates/navigation.subtemplate' mode=0 %]
 <h1>Nodes list</h1>
 
@@ -12,6 +13,7 @@
 
 <table>
 [% PROCESS pager number=0 cols=4 %]
+[% PROCESS filter cols=4 %]
     <tr><th>ID</th><th>Node</th><th>Signature</th><th>Type</th><th>State</th><th>Last sync</th></tr>
 [% SET i = 0 %]
 [% FOREACH node = data.nodes %]
@@ -29,7 +31,7 @@
 </table>
 
 [% ELSE %]
-
+[% PROCESS filter cols=0 %]
 <p>Nodes not found.</p>
 [% END %]
 

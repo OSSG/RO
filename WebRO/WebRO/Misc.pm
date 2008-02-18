@@ -24,9 +24,9 @@ use strict;
 use Exporter;
 
 @WebRO::Misc::ISA = ('Exporter');
-@WebRO::Misc::EXPORT = qw(&pager &check_digit &quote &quote_hash);
+@WebRO::Misc::EXPORT = qw(&pager &check_digit &quote &quote_hash &db_pattern_quote);
 
-# method: pager
+# function: pager
 # args: структура данных
 # returns: навигационная структура
 # description: строит по структуре данных навигационную структуру
@@ -65,7 +65,7 @@ sub pager {
     return $pager;
 }
 
-# method: check_digit
+# function: check_digit
 # args: проверяемая величина
 # returns: 0 в случае неудачной проверки, 1 в случае удачной
 # description: проверяет, является ли величина целым числом
@@ -76,7 +76,7 @@ sub check_digit {
     return ($value =~ /^[0-9]+$/);
 }
 
-# method: quote
+# function: quote
 # args: строка
 # returns: квотированная строка
 # description: квотирует строку для использования в html/xhtml
@@ -91,9 +91,10 @@ sub quote {
     return $string;
 }
 
-# функция квотирования всех полей хеша
-# аргумент - ссылка на хеш
-# возвращает ссылку на квотированный хеш
+# function: quote_hash
+# args: ссылка на хеш
+# returns: ссылка на квотированный хеш
+# description: функция квотирования всех полей хеша
 sub quote_hash {
     my $hash = shift;
 
@@ -103,4 +104,17 @@ sub quote_hash {
 
     return $hash;
 }
+
+# function: db_pattern_quote
+# args: строка-шаблон
+# returns: квотированная строка-шаблон
+# description: функция квотирования шаблона поиска в БД
+sub db_pattern_quote {
+    my $string = shift;
+    $string =~ s/\\/\\\\/g;
+    $string =~ s/\%/\\\%/g;
+    $string =~ s/_/\\_/g;
+    return $string;
+}
+
 1;

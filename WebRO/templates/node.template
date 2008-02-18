@@ -35,9 +35,9 @@
 [% END %]
 
 <h2>Notes</h2>
-<p>
+<pre>
 [% IF node.notes %][% GET node.notes %][% ELSE %]None.[% END %]
-</p>
+</pre>
 
 <h2>Related nodes</h2>
 [% IF nodes.size %]

@@ -73,8 +73,24 @@ sub action {
 
     my $limit = check_digit($config->{'nodes_list_limit'}) ? $config->{'nodes_list_limit'} : 25;
 
+# подготовка к возможной фильтрации узлов
+    my @args;
+    my $condition = '';
+    $data->{'query_string'} = '';
+
+# проверка задания фильтра
+    my $filter = $request->param('filter') || '';
+    if ($filter ne '') {
+# фильтр задан - в запросе появляется условие отбора
+	$condition = ' where upper(name) like ?';
+	push(@args, '%' . uc(db_pattern_quote($filter)) . '%');
+# информация о критерии отбора будет передана в шаблон
+	$data->{'filter'} = quote($filter);
+	$data->{'query_string'} .= '&amp;filter=' . $request->escape($filter);
+    }
+
 # получение общего числа узлов
-    my $count = $db->sql_select('select count(*) as count from nodes')->[0]->{'count'};
+    my $count = $db->sql_select('select count(*) as count from nodes' . $condition, @args)->[0]->{'count'};
 
     my $page = $request->param('page');
     $page = (defined $page && check_digit($page)) ? $page : 0;
@@ -89,7 +105,7 @@ sub action {
     } while (($page >= $data->{'pager'}->{'pages_count'}) && ($count > 0));
 
 # получение списка пакетов (нужной страницы)
-    $data->{'nodes'} = $db->sql_select('select * from nodes order by node_type asc, state desc, importance desc, name asc limit ' . $limit . ' offset ' . $page*$limit);
+    $data->{'nodes'} = $db->sql_select('select * from nodes' . $condition . ' order by node_type asc, state desc, importance desc, name asc limit ' . $limit . ' offset ' . $page*$limit, @args);
 
     foreach (@{$data->{'nodes'}}) {
 	$_->{'name'} = quote($_->{'name'});

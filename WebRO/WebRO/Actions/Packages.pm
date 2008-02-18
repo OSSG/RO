@@ -30,16 +30,34 @@ sub action {
     $request = $$request;
     my $config = shift;
 
+    my $list;
+
     my $limit = check_digit($config->{'packages_list_limit'}) ? $config->{'packages_list_limit'} : 25;
 
-    my $count = $db->sql_select('select count(distinct(package)) as count from packages_vs_nodes')->[0]->{'count'};
+# подготовка к возможной фильтрации узлов
+    my @args;
+    my $condition = '';
+    $list->{'query_string'} = '';
+
+# проверка задания фильтра
+    my $filter = $request->param('filter') || '';
+    if ($filter ne '') {
+# фильтр задан - в запросе появляется условие отбора
+	$condition = ' where upper(name) like ?';
+	push(@args, '%' . uc(db_pattern_quote($filter)) . '%');
+# информация о критерии отбора будет передана в шаблон
+	$list->{'filter'} = quote($filter);
+	$list->{'query_string'} .= '&amp;filter=' . $request->escape($filter);
+    }
+
+    my $count = $db->sql_select('select count(distinct(package)) as count from packages_vs_nodes right join packages on packages.id=packages_vs_nodes.package' . $condition, @args)->[0]->{'count'};
 
     my $page = $request->param('page');
     $page = (defined $page && check_digit($page)) ? $page : 0;
 
 # создание пейджера для списка узлов, если указанная страница превышает общее число страниц списка,
 # то считается, что запрошена первая страница и пейджер создается заново.
-    my $list;
+
     do {
 	if ($list->{'pager'}) { $page = 0; }
 	$list->{'pager'} = pager({'limit' => $limit, 'count' => $count, 'page' => $page});
@@ -47,7 +65,7 @@ sub action {
     } while (($page >= $list->{'pager'}->{'pages_count'}) && ($count > 0));
 
 # получение списка пакетов (нужной страницы)
-    $list->{'packages'} = $db->sql_select('select distinct(package) as id, name from packages_vs_nodes right join packages on packages.id=packages_vs_nodes.package order by name limit ' . $limit . ' offset ' . $page*$limit);
+    $list->{'packages'} = $db->sql_select('select distinct(package) as id, name from packages_vs_nodes right join packages on packages.id=packages_vs_nodes.package' . $condition . ' order by name limit ' . $limit . ' offset ' . $page*$limit, @args);
 
     foreach (@{$list->{'packages'}}) {
 	$_->{'name'} = quote($_->{'name'});

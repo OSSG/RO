@@ -1,0 +1,9 @@
+[% BLOCK filter %]
+[% IF cols %]<tr><td class="pager" colspan="[% GET cols %]">[% END %]
+
+<form action="[% GET uri %]" method="get">
+Filter by name: <input type="text" value="[% GET data.filter %]" name="filter" size="20" /> <input type="submit" value="Submit" />
+</form>
+
+[% IF cols %]</td></tr>[% END %]
+[% END %]
