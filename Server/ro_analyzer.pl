@@ -19,7 +19,7 @@ use strict;
 use DBI;
 use Getopt::Long qw(:config no_ignore_case bundling no_auto_abbrev);
 
-my $VERSION = '0.9.13svn'; # версия анализатора
+my $VERSION = '0.9.14svn'; # версия анализатора
 
 # коды состояний (были заданы при создании БД)
 my $states = {
