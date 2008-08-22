@@ -45,7 +45,7 @@ create table packages (
     default character set utf8
     collate utf8_bin;
 
--- Таблица узлов		  
+-- Таблица узлов
 drop table if exists nodes;
 create table nodes (
     `id` integer unsigned not null auto_increment primary key, -- id узла

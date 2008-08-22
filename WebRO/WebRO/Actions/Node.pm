@@ -119,7 +119,7 @@ sub _get_node {
 	$node = quote_hash($node);
     }
 
-    return $node;    
+    return $node;
 }
 
 1;

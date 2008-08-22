@@ -1,0 +1,10 @@
+[% IF error %]
+[% INCLUDE 'subtemplates/header.subtemplate' %]
+	<title>WebRO: Error</title>
+[% INCLUDE 'subtemplates/middle.subtemplate' %]
+[% INCLUDE 'subtemplates/navigation.subtemplate' %]
+<h1>[% IF error == 1 %]Error. Unknown node.[% ELSIF error == 2 %]Error. Unknown data to export.[% ELSIF error == 3 %]Error. Unknown export format[% END %]</h1>
+[% INCLUDE 'subtemplates/footer.subtemplate' %]
+[% ELSE %]
+[% GET export %]
+[% END %]

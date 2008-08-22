@@ -13,7 +13,7 @@
 <p>ID: [% GET node.id %]</p>
 <p>Signature: [% GET node.signature %]</p>
 <p>Last sync: [% IF node.sync_time %][% GET node.sync_time %][% ELSE %]Never[% END %]</p>
-<p>Packages: [% GET node.packages %]</p>
+<p>Packages: [% GET node.packages %][% IF node.packages %] [<a href="export_node?id=[% GET node.id %]&amp;action=all_packages&amp;format=txt">Export packages list as text</a>][% END %]</p>
 <p>State: [% IF node.to_check %]<font class="unknown">Unknown</font>[% ELSE %]<font class="[% IF node.troubles.trouble %][% IF node.troubles.state == 'Old' %]old_[% ELSIF node.troubles.state == 'Orphaned' %]orph_[% ELSIF node.troubles.state == 'Too new' %]new_[% END %][% IF node.troubles.importance > 1 %]imp_high[% ELSE %]imp_low[% END %][% ELSE %]normal[% END %]">[% GET node.troubles.state %]</font>[% END %]</p>
 [% IF !node.to_check && node.troubles.trouble && node.troubles.packages && node.troubles.packages.size %]
 <h3>Troubled packages ([% GET node.troubles.packages.size %])</h3>

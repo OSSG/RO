@@ -31,7 +31,8 @@ use constant OK => 200;
 my $actions = { 'packages' => 'WebRO::Actions::Packages',
 		'package' => 'WebRO::Actions::Package',
 		'nodes' => 'WebRO::Actions::Nodes',
-		'node' => 'WebRO::Actions::Node'
+		'node' => 'WebRO::Actions::Node',
+		'export_node' => 'WebRO::Actions::Export::Node'
 };
 
 # конфигурация (лежит в файле './config')
@@ -74,7 +75,7 @@ while(my $request = new CGI::Fast) {
 	    $data->{'static'} = $config->{'static'};
 	    my $res;
 	    if ($output->process($url . '.template', $data, \$res)) {
-		print $request->header({'status' => OK, 'type' => 'text/html; charset=utf-8'});
+		print $request->header($data->{'_header'} || {'status' => OK, 'type' => 'text/html; charset=utf-8'});
 		print $res;
 	    }
 	    else {
