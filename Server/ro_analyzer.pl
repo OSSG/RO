@@ -239,37 +239,21 @@ sub compare_packages {
 
     return $result if $result;
 
-    my @temp1 = split(/\./, $package_1->{'version'});
-    my @temp2 = split(/\./, $package_2->{'version'});
-
-    for (my $i=0; $i < scalar(@temp1); $i++) {
-	if (defined $temp2[$i]) {
-	    if (check_digit($temp1[$i]) && check_digit($temp2[$i])) {
-		$result = ($temp1[$i] <=> $temp2[$i]);
-	    }
-	    else {
-		$result = ($temp1[$i] cmp $temp2[$i]);
-	    }
-	}
-	else {
-	    $result = 1;
-	}
-    	last if $result;
-    }
+    $result = basic_check($package_1->{'version'}, $package_2->{'version'});
 
     return $result if $result;
-
-    return -1 if (scalar(@temp2) > scalar(@temp1));
 
     if (check_digit($package_1->{'release'}) && check_digit($package_2->{'release'})) {
 	$result = ($package_1->{'release'} <=> $package_2->{'release'});
     }
     else{
-	($package_1->{'release'} =~ /^([A-Za-z]+)([0-9]+)/);
+	($package_1->{'release'} =~ /^([A-Za-z]+)(.+)/);
 	my $prefix = $1;
 	my $version = $2;
-	if (defined $prefix && ($package_2->{'release'} =~ /^$prefix([0-9]+)/)) {
-	    $result = ($version <=> $1);
+	if (defined $prefix && ($package_2->{'release'} =~ /^$prefix(.+)/)) {
+
+	    $result = basic_check($version, $1);
+
 	    if (!$result && ($package_1->{'release'} ne $package_2->{'release'})) {
 		$result = ($package_1->{'release'} cmp $package_2->{'release'});
 	    }
@@ -292,4 +276,40 @@ sub check_digit {
 
     return 0 unless defined $value;
     return ($value =~ /^[0-9]+$/);
+}
+
+# функция: basic_check
+# аргументы: две сравниваемые величины
+# результат - 0 - если величины одинаковы
+# 1 - если первая величина больше
+# -1 - если вторая величина больше
+sub basic_check {
+    my $value1 = shift;
+    my $value2 = shift;
+
+    my $result = 0;
+
+# предполагается, что величины разделены '.' (точками)
+# сравнение производится отдельно по каждой из частей величин
+    my @temp1 = split(/\./, $value1);
+    my @temp2 = split(/\./, $value2);
+
+    for (my $i=0; $i < scalar(@temp1); $i++) {
+	if (defined $temp2[$i]) {
+	    if (check_digit($temp1[$i]) && check_digit($temp2[$i])) {
+		$result = ($temp1[$i] <=> $temp2[$i]);
+	    }
+	    else {
+		$result = ($temp1[$i] cmp $temp2[$i]);
+	    }
+	}
+	else {
+	    $result = 1;
+	}
+    	last if $result;
+    }
+
+    return $result if $result;
+
+    return -1 if (scalar(@temp2) > scalar(@temp1));
 }
