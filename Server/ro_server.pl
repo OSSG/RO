@@ -1,6 +1,6 @@
 #!/usr/bin/perl -wT
 # RO (Repository Observer) - Server script
-# Copyright (C) 2007, 2008 Fedor A. Fetisov <faf@ossg.ru>. All Rights Reserved
+# Copyright (C) 2007-2011 Fedor A. Fetisov <faf@ossg.ru>. All Rights Reserved
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ while(my $request = new CGI::Fast) {
     my $content = '';
 
 # url не должен отличаться от корневого - иначе документ не найден
-    unless (defined $url) {
+    if ((!defined $url) || ($url eq '')) {
 
 # получение операции над списком пакетов узла (инициализация или обновление)
 	my $action = $request->param('action') || '';

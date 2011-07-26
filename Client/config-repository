@@ -10,6 +10,11 @@
 			'proto' => 'http' # workflow protocol
     },
 
+# LWP UA settings (can be useful with SSL connections)
+# USE AT YOUR OWN RISK, SKIP IT UNLESS YOUR REALLY KNOW WHAT YOU DO
+#    'lwp_ua_options' => { 'agent' => 'RO Client'
+#    },
+
 # cache location
     'cache'	=> '/var/cache/ro',
 

@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # RO (Repository Observer) - Client script
-# Copyright (C) 2007, 2008 Fedor A. Fetisov <faf@ossg.ru>. All Rights Reserved
+# Copyright (C) 2007-2011 Fedor A. Fetisov <faf@ossg.ru>. All Rights Reserved
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ use Encode qw(from_to);
 use constant PACKAGES_LIMIT => 500; # максимальное количество пакетов, пересылаемое в одном XML-документе
 				    # внимание - при запросе обновления отсылается два XML-документа
 
-my $VERSION = '0.9.16svn'; # версия клиента
+my $VERSION = '0.9.17svn'; # версия клиента
 
 my $date = localtime(time); # для записи в кеш - на всякий случай
 
@@ -388,7 +388,19 @@ if ((defined $config->{'log'}) && (ref($config->{'log'}) eq 'HASH') && $config->
 
 # отсылка данных
 print STDERR "[DEBUG] Initializing user agent to send data.\n" if $debug_mode;
-my $ua = LWP::UserAgent->new();
+
+# инициализация клиента для отсылки данных
+my %ua_options;
+# при работе через https по умолчанию не проверять сертификат сервера
+$ua_options{'ssl_opts'} = {'verify_hostname' => 0 } if (($config->{'server'}->{'proto'} eq 'https') && !($LWP::UserAgent::VERSION =~ /^[0-5]\./));
+# задание/переопределение опций клиента, указанных в конфигурации
+if ((defined $config->{'lwp_ua_options'}) && (ref($config->{'lwp_ua_options'}) eq 'HASH')) {
+    foreach (keys(%{$config->{'lwp_ua_options'}})) {
+	$ua_options{$_} = $config->{'lwp_ua_options'}->{$_};
+    }
+}
+
+my $ua = scalar(keys(%ua_options)) ? LWP::UserAgent->new(%ua_options) : LWP::UserAgent->new();
 
 # если данных для отсылки нет, должны быть отосланы пустые данные,
 # чтобы обновить дату синхронизации системы на сервере
@@ -405,7 +417,7 @@ unless (scalar(@$params)) {
 	    $params->[0]->{'packages'} = make_xml({});
 	    $params->[0]->{'action'} = 'init';
 	}
-	$params->[0]->{'node'} = $config->{'signature'};    
+	$params->[0]->{'node'} = $config->{'signature'};
 }
 
 my $error;

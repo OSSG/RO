@@ -10,6 +10,11 @@
 			'proto' => 'http' # workflow protocol
     },
 
+# LWP UA settings (can be useful with SSL connections)
+# USE AT YOUR OWN RISK, SKIP IT UNLESS YOUR REALLY KNOW WHAT YOU DO
+#    'lwp_ua_options' => { 'agent' => 'RO Client'
+#    },
+
 # logfile section
     'log'	=> {	'use_log'	=> 1,# logging flag
 			'log_file'	=> '/var/log/ro_log' # log location

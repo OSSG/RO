@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 # RO (Repository Observer) - Analyzer script
-# Copyright (C) 2007, 2008 Fedor A. Fetisov <faf@ossg.ru>. All Rights Reserved
+# Copyright (C) 2007-2011 Fedor A. Fetisov <faf@ossg.ru>. All Rights Reserved
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ use strict;
 use DBI;
 use Getopt::Long qw(:config no_ignore_case bundling no_auto_abbrev);
 
-my $VERSION = '0.9.16svn'; # версия анализатора
+my $VERSION = '0.9.17svn'; # версия анализатора
 
 # коды состояний (были заданы при создании БД)
 my $states = {
